@@ -41,7 +41,6 @@ public class AggregateController {
         System.out.println("Path variable static: "+staticc);
         System.out.println("Query param : "+test);
         System.out.println("Query param static : "+test2);
-//        System.out.println(httpHeaders.get("Headers static : "+"static"));
         return ResponseEntity.ok(request);
     }
 
