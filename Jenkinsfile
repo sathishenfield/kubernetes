@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-       maven "maven_3_9_6"
+       maven "gradle"
     }
     stages{
         stage("Build Gradle Test"){
