@@ -4,16 +4,16 @@ pipeline {
        maven "maven_3_9_6"
     }
     stages{
-        stage("Build Maven Test"){
+        stage("Build Gradle Test"){
             steps {
             checkout scmGit(branches: [[name: '*/dev']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/sathishenfield/kubernetes/']])
-            sh 'mvn test'
+            sh './gradlew test'
             }
         }
-        stage("Build Maven"){
+        stage("Build Gradle "){
             steps {
             checkout scmGit(branches: [[name: '*/dev']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/sathishenfield/kubernetes/']])
-            sh 'mvn clean install -DskipTests'
+            sh './gradlew build -x test'
             }
         }
             }
