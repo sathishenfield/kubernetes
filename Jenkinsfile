@@ -3,6 +3,10 @@ pipeline {
     tools {
        gradle  "gradle"
     }
+    environment {
+       IMAGE_NAME = "my-spring-app"
+       IMAGE_TAG = "${env.GIT_COMMIT.take(7)}"
+    }
     stages{
         stage("Build Gradle Test"){
             steps {
@@ -19,19 +23,20 @@ pipeline {
             }
         }
         stage("Build Docker Image") {
-                    steps {
-                        script {
-                            def imageName = "my-spring-app"
-                            def imageTag = "${env.GIT_COMMIT.take(7)}"
-
-                            // Build Docker image
-                            sh "docker build -t ${imageName}:${imageTag} ."
-
-                            // Optionally push to Docker registry (uncomment and set credentials)
-                            // sh "docker login -u <username> -p <password>"
-                            // sh "docker push ${imageName}:${imageTag}"
-                        }
-                    }
+            steps {
+              script {
+                // Build Docker image
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+              }
+            }
+        }
+        stage('Docker Login & Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                   sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                   sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
         }
     }
 }
