@@ -39,5 +39,11 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh "kubectl set image deployment/javawebappdeployment javawebappcontainer=${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "kubectl rollout status deployment/javawebappdeployment"
+            }
+        }
     }
 }
