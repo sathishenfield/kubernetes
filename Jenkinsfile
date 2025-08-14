@@ -7,6 +7,7 @@ pipeline {
        IMAGE_NAME = "my-spring-app"
        IMAGE_TAG = "${env.GIT_COMMIT.take(7)}"
 //        DOCKER_USER = credentials('dockerhub-creds')
+       DOCKER_CREDS = credentials('dockerhub-creds')
     }
     stages{
         stage("Build Gradle Test"){
@@ -41,7 +42,7 @@ pipeline {
         }
         stage('Deploy to Kubernetes') {
             steps {
-                sh "kubectl set image deployment/javawebappdeployment javawebappcontainer=${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "kubectl set image deployment/javawebappdeployment javawebappcontainer=${DOCKER_CREDS_USR}/${IMAGE_NAME}:${IMAGE_TAG}"
                 sh "kubectl rollout status deployment/javawebappdeployment"
             }
         }
