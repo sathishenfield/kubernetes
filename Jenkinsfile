@@ -6,6 +6,7 @@ pipeline {
     environment {
        IMAGE_NAME = "my-spring-app"
        IMAGE_TAG = "${env.GIT_COMMIT.take(7)}"
+       DOCKER_USER = credentials('dockerhub-creds')
     }
     stages{
         stage("Build Gradle Test"){
