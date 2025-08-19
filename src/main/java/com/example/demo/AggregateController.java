@@ -19,7 +19,7 @@ public class AggregateController {
     @GetMapping("/get/{path}")
     public ResponseEntity<String> getAggregate(@PathVariable("path") String path){
         log.info(path);
-        return ResponseEntity.ok("Success Modifiedgdh");
+        return ResponseEntity.ok("Success Modified");
     }
 
     @PostMapping("/post1")

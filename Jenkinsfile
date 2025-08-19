@@ -34,17 +34,21 @@ pipeline {
         stage('Docker Login & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                   sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
-                   sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
-                   sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+                   sh '''
+                        docker build -t $DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG} .
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push $DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG}
+                   '''
                 }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                   sh "kubectl set image deployment/javawebappdeployment javawebappcontainer=${DOCKER_CREDS_USR}/${IMAGE_NAME}:${IMAGE_TAG}"
-                   sh "kubectl rollout status deployment/javawebappdeployment"
+                   sh '''
+                        kubectl set image deployment/javawebappdeployment javawebappcontainer=$DOCKER_CREDS_USR/${IMAGE_NAME}:${IMAGE_TAG}
+                        kubectl rollout status deployment/javawebappdeployment
+                   '''
                 }
             }
         }
