@@ -42,8 +42,10 @@ pipeline {
         }
         stage('Deploy to Kubernetes') {
             steps {
-                sh "kubectl set image deployment/javawebappdeployment javawebappcontainer=${DOCKER_CREDS_USR}/${IMAGE_NAME}:${IMAGE_TAG}"
-                sh "kubectl rollout status deployment/javawebappdeployment"
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                   sh "kubectl set image deployment/javawebappdeployment javawebappcontainer=${DOCKER_CREDS_USR}/${IMAGE_NAME}:${IMAGE_TAG}"
+                   sh "kubectl rollout status deployment/javawebappdeployment"
+                }
             }
         }
     }
