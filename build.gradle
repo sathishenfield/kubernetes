@@ -33,6 +33,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+tasks.named("jacocoTestCoverageVerification") {
+	dependsOn("compileJava", "processResources", "test")
+}
+
 jacoco {
 	toolVersion = "0.8.10"
 }
