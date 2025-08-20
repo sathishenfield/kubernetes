@@ -31,7 +31,7 @@ public class AggregateController {
         return ResponseEntity.ok(endpointResponses);
     }
 
-    @GetMapping("/endpoints/save")
+    @PostMapping("/endpoints/save")
     public ResponseEntity<Endpoint> saveEndpoints(@RequestBody EndpointRequest endpointRequest){
         Endpoint endpoint = endPointService.saveEndpoint(endpointRequest);
         return ResponseEntity.ok(endpoint);

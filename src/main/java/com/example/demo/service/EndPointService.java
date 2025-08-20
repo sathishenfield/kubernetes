@@ -77,11 +77,7 @@ public class EndPointService {
             } else {
                 Specification<Endpoint> spec = (root, query, cb) -> {
                     List<Predicate> predicates = new ArrayList<>();
-
-                    if (!httpMethod.isBlank()) {
-                        predicates.add(cb.equal(root.get("httpMethod"), httpMethod));
-                    }
-
+                    predicates.add(cb.equal(root.get("httpMethod"), httpMethod));
                     return cb.and(predicates.toArray(new Predicate[0]));
                 };
                 endpoints = endPointRepository.findAll(spec, paging);
