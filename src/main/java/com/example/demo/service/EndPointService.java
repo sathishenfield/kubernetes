@@ -34,7 +34,7 @@ public class EndPointService {
         log.info("saveEndpoint: Request started.");
 
         if (Objects.isNull(endpointRequest)) {
-            log.error("saveEndpoint: EndpointRequest is null. Request: {}", endpointRequest);
+            log.error("saveEndpoint: EndpointRequest is null. Requests: {}", endpointRequest);
         }
 
         try {
