@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.18'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'jacoco'
 }
 
 group = 'com.example'
@@ -21,10 +22,69 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'mysql:mysql-connector-java:8.0.33'
+	implementation 'org.modelmapper:modelmapper:3.1.1'
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	implementation 'com.razorpay:razorpay-java:1.4.3'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
 }
+
+tasks.named("jacocoTestCoverageVerification") {
+	dependsOn("compileJava", "processResources", "test")
+}
+
+jacoco {
+	toolVersion = "0.8.10"
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		csv.required = true
+		html.required = true
+		html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(
+				files(classDirectories.files.collect {
+					fileTree(dir: it, exclude: [
+							"com/example/demo/model/**",
+							"com/example/demo/dto/**"
+					])
+				})
+		)
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'BUNDLE'
+			limit {
+				counter = 'INSTRUCTION'
+				value = 'COVEREDRATIO'
+				minimum = 0.60
+			}
+		}
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'com/example/demo/model/**',
+					'com/example/demo/dto/**'
+			])
+		}))
+	}
+}
+
+
+check.dependsOn jacocoTestCoverageVerification
